@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Error from './components/Error';
 import Header from './components/Header';
+import SideBar from './components/SideBar';
 import Home from './pages/Home';
 import reportWebVitals from './reportWebVitals';
+import GlobalStyle from './utils/styles/GlobalStyle';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
+    <GlobalStyle />
       <Header />
+      <SideBar />
       <Routes>
         <Route path="/" element={<Home /> } />
         <Route path="*" element={<Error />} />
