@@ -5,6 +5,7 @@ import Error from './components/Error';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
 import Home from './pages/Home';
+import UserProfile from './pages/User';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyle from './utils/styles/GlobalStyle';
 
@@ -16,6 +17,7 @@ ReactDOM.render(
       <SideBar />
       <Routes>
         <Route path="/" element={<Home /> } />
+        <Route path="/user/:id" element={<UserProfile />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
