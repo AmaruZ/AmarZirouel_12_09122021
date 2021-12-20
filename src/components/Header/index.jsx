@@ -7,7 +7,7 @@ const StyledHeader = styled.header`
     justify-content: space-between;
     align-items: center;
     background: #000;
-    padding: 20px 30px;
+    padding: 0.6% 30px;
 `
 
 const Navigation = styled.nav`

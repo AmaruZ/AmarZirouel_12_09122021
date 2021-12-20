@@ -9,14 +9,14 @@ const VerticalBar = styled.div`
     position: fixed;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     background: #000;
     width: 117px;
-    height: calc(100vh - 100px);
+    height: 100vh ;
 `
 const Navigation = styled.nav`
-    height: 60%;
+    height: 50%;
 `
 const NavElement = styled.li`
     margin-bottom: 10px;

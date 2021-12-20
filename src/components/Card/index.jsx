@@ -4,13 +4,17 @@ import iconProt from '../../assets/icon-protein.svg'
 import iconCarb from '../../assets/icon-carbo.svg'
 import iconFat from '../../assets/icon-fat.svg'
 
-const CardsContainer = styled.div``
+const CardsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+`
 
 const CardWrapper = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 258px;
-    height: 124px;
+    width: 17vw;
+    height: 13vh;
     background: #fbfbfb;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249);
     border-radius: 5px;

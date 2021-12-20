@@ -10,3 +10,12 @@ export async function fetchData(id) {
     }
 }
 
+export async function fetchActivity(id){
+    try {
+        const response = await axios.get(`http://localhost:3000/user/${id}/activity`)
+        return response.data
+
+    } catch (error) {
+        console.log(error)
+    }
+}

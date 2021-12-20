@@ -1,15 +1,17 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const ErrorContainer = styled.main`
-margin-left: 117px;
-width: 100vw;
-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 117px;
+    width: 80vw;
+    height: 85vh;
+    font-size: 100px;
 `
 
-function Error(){
-    return (
-        <ErrorContainer>404</ErrorContainer>
-    )
+function Error() {
+    return <ErrorContainer>404</ErrorContainer>
 }
 
 export default Error
