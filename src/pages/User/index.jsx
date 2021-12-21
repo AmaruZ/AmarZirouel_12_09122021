@@ -4,10 +4,17 @@ import { useState } from 'react/cjs/react.development'
 import styled from 'styled-components'
 import Hello from '../../components/Hello'
 import Error from '../../components/Error'
-import { fetchActivity, fetchData } from '../../services'
+import {
+    fetchActivity,
+    fetchData,
+    fetchPerformance,
+    fetchSessions,
+} from '../../services'
 import Card from '../../components/Card'
 import Graph from '../../components/Graph'
 import BarChart from '../../components/BarChart'
+import LineChart from '../../components/LineChart'
+import SpiderChart from '../../components/SpiderChart'
 
 const UserContainer = styled.div`
     margin-left: 117px;
@@ -34,38 +41,41 @@ const MediumGraphsContainer = styled.div`
     display: flex;
     height: 49%;
     justify-content: space-between;
+    margin-top: 20px;
 `
 
 function UserProfile() {
     const { id } = useParams()
     const [data, setData] = useState([])
     const [activity, setActivity] = useState()
+    const [session, setSession] = useState()
+    const [performance, setPerformance] = useState()
     const [isLoading, setLoading] = useState(true)
     useEffect(() => {
         setLoading(true)
         const getData = async () => {
             try {
-                const request = await fetchData(id)
-                setData(request.data)
+                const datas = await fetchData(id)
+                const activities = await fetchActivity(id)
+                const sessions = await fetchSessions(id)
+                const performances = await fetchPerformance(id)
+                setData(datas.data)
+                setActivity(activities.data.sessions)
+                setSession(sessions.data.sessions)
+                setPerformance(performances.data)
             } catch (e) {
                 console.log(e)
             }
         }
-        const getActivity = async () => {
-            try {
-                const request = await fetchActivity(id)
-                setActivity(request.data.sessions)
-            } catch (e) {
-                console.log(e)
-            }
-        }
-            getData()
-            getActivity()
-            setLoading(false)
-
+        getData()
     }, [id])
 
+    useEffect(()=>{
+        if (performance) setLoading(false)
+    }, [performance])
+
     if (data.length === 0) return <Error />
+
 
     return isLoading ? (
         'chargement'
@@ -77,8 +87,15 @@ function UserProfile() {
                     <BarChart activity={activity} />
 
                     <MediumGraphsContainer>
-                        <Graph type="medium" />
-                        <Graph type="medium" />
+                        <LineChart session={session} />
+                        <SpiderChart
+                            cardio={performance.data[0].value}
+                            energy={performance.data[1].value}
+                            endurance={performance.data[2].value}
+                            strength={performance.data[3].value}
+                            speed={performance.data[4].value}
+                            intensity={performance.data[5].value}
+                        />
                         <Graph type="medium" />
                     </MediumGraphsContainer>
                 </GraphsContainer>

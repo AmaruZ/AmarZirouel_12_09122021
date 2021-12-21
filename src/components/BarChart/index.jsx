@@ -128,7 +128,7 @@ function BarChart({ activity }) {
                 .selectAll('text')
                 .attr('transform', 'translate(0, 10)')
 
-            const yAxis = axisRight(yScale).ticks(2).tickSize(0)
+            const yAxis = axisRight(yScale).ticks(2).tickSize(0).tickValues([d3.min(activity, (d) => d.kilogram), d3.max(activity, (d) => d.kilogram) +1] )
 
             svg.select('.y-axis')
                 .attr('transform', `translate(${width - margin.right}, 5)`)
@@ -191,19 +191,21 @@ function BarChart({ activity }) {
                 .attr('width', 39)
                 .attr('height', 63)
                 .attr('fill', '#E60000')
+
             tooltip
                 .append('text')
                 .attr('x', (value, index) => xScale(index) + 105)
                 .attr('y', 25)
                 .text((d) => d.kilogram)
                 .attr('fill', 'white')
+                .style('font-size', '10px')
             tooltip
                 .append('text')
                 .attr('x', (value, index) => xScale(index) + 105)
                 .attr('y', 40)
                 .text((d) => d.calories)
                 .attr('fill', 'white')
-                .style('font-size', "10px")
+                .style('font-size', '10px')
         }
     }, [activity])
 
