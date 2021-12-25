@@ -2,15 +2,14 @@ import * as d3 from 'd3'
 import { axisBottom, axisRight } from 'd3'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { colors } from '../../utils/styles/colors'
 
 const BarChartContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    background: #fbfbfb;
+    background: ${colors.lightgrey};
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249);
     border-radius: 5px;
 `
@@ -33,77 +32,57 @@ function BarChart({ activity }) {
 
     useEffect(() => {
         if (activity) {
-            const height = 250
+            const height = 300
             const width = 700
-            const margin = { top: 50, right: 30, bottom: 50, left: 0 }
+            const margin = { top: 15, right: 30, bottom: 40, left: 0 }
             const barWidth = 7
             const weigthBarOffset = 60
 
             const legends = d3
                 .select(titleRef.current)
                 .attr('width', width)
-                .attr('height', 50)
+                .attr('height', 40)
 
-            legends
-                .append('text')
-                .attr('x', 0)
-                .attr('y', 25)
-                .text('Activité quotidienne')
-                .style('font-size', '15px')
-                .style('font-weight', '500')
-                .attr('alignment-baseline', 'middle')
+            const addText = (text, position, parent) => {
+                parent
+                    .append('text')
+                    .text(text)
+                    .attr('x', position.x)
+                    .attr('y', position.y)
+                    .style('font-size', 15)
+                    .style('font-weight', 500)
+                    .style('alignment-baseline', 'middle')
+            }
 
-            legends
-                .append('circle')
-                .attr('cx', width - 250)
-                .attr('cy', 25)
-                .attr('r', 8)
-                .style('fill', '#282D30')
+            addText('Activité quotidienne', { x: 0, y: 20 }, legends)
+            addText('Poids (kg)', { x: width - 230, y: 20 }, legends)
+            addText('Calories (kCal)', { x: width - 120, y: 20 }, legends)
 
-            legends
-                .append('text')
-                .attr('x', width - 230)
-                .attr('y', 25)
-                .text('Poids (kg)')
-                .style('font-size', '15px')
-                .style('font-weight', '500')
-                .attr('alignment-baseline', 'middle')
-            legends
-                .append('circle')
-                .attr('cx', width - 140)
-                .attr('cy', 25)
-                .attr('r', 8)
-                .style('fill', '#E60000')
-            legends
-                .append('text')
-                .attr('x', width - 120)
-                .attr('y', 25)
-                .text('Calories (kCal)')
-                .style('font-size', '15px')
-                .style('font-weight', '500')
-                .attr('alignment-baseline', 'middle')
+            const addLegendCircle = (position, color) => {
+                legends
+                    .append('circle')
+                    .attr('cx', position.x)
+                    .attr('cy', position.y)
+                    .attr('r', 8)
+                    .style('fill', color)
+            }
+            addLegendCircle({x: width - 245, y: 19}, colors.black)
+            addLegendCircle({x: width - 135, y: 19}, colors.red)
 
             const svg = d3
                 .select(chartRef.current)
                 .attr('width', width)
                 .attr('height', height)
-                .attr('transform', `translate( ${margin.left} , ${margin.top})`)
+                .attr('transform', `translate( ${margin.left} , 0)`)
 
             const xScale = d3
                 .scaleBand()
                 .range([0, width - 100])
                 .domain(activity.map((d, i) => i))
 
-            const yScale = d3
-                .scaleLinear()
-                .range([height - margin.top, 0])
-                .domain([
-                    d3.min(activity, (d) => d.kilogram) - 2,
-                    d3.max(activity, (d) => d.kilogram) + 2,
-                ])
             const weightScale = d3
                 .scaleLinear()
-                .range([0, height - margin.top])
+                .range([height - margin.top, 0])
                 .domain([
                     d3.min(activity, (d) => d.kilogram) - 2,
                     d3.max(activity, (d) => d.kilogram) + 2,
@@ -111,7 +90,7 @@ function BarChart({ activity }) {
 
             const calScale = d3
                 .scaleLinear()
-                .range([0, height - margin.top])
+                .range([height - margin.top, 0])
                 .domain([
                     d3.min(activity, (d) => d.calories - 100),
                     d3.max(activity, (d) => d.calories + 100),
@@ -128,39 +107,46 @@ function BarChart({ activity }) {
                 .selectAll('text')
                 .attr('transform', 'translate(0, 10)')
 
-            const yAxis = axisRight(yScale).ticks(2).tickSize(0).tickValues([d3.min(activity, (d) => d.kilogram), d3.max(activity, (d) => d.kilogram) +1] )
+            const yAxis = axisRight(weightScale)
+                .ticks(2)
+                .tickSize(0)
+                .tickValues([
+                    d3.min(activity, (d) => d.kilogram),
+                    d3.max(activity, (d) => d.kilogram) + 1,
+                ])
 
             svg.select('.y-axis')
-                .attr('transform', `translate(${width - margin.right}, 5)`)
+                .attr(
+                    'transform',
+                    `translate(${width - margin.right}, ${-margin.top})`
+                )
                 .attr('stroke-width', 0)
                 .call(yAxis)
 
-            svg.selectAll('.weight-bar')
+            const createDataBars = (className, x, y, color) =>{
+                svg.append('g').selectAll(className)
                 .data(activity)
-                .join('rect')
-                .attr('class', 'weight-bar')
-                .attr('transform', 'scale(1, -1)')
-                .attr('x', (value, index) => xScale(index) + weigthBarOffset)
-                .attr('y', -height + margin.top)
-                .attr('width', barWidth)
-                .attr('height', (value) => weightScale(value.kilogram) - 10)
-                .attr('rx', 5)
-                .attr('fill', '#282D30')
+                .join('line')
+                .attr('class', className)
+                .attr('x1', x)
+                .attr('x2', x)
+                .attr('y1', height - margin.bottom)
+                .attr('y2', y)
+                .attr('stroke-width', barWidth)
+                .attr('stroke', color)
 
-            svg.selectAll('.calories-bar')
+                svg.append('g').selectAll(`.${className}-circle`)
                 .data(activity)
-                .join('rect')
-                .attr('class', 'calories-bar')
-                .attr('transform', 'scale(1, -1)')
-                .attr(
-                    'x',
-                    (value, index) => xScale(index) + weigthBarOffset + 20
-                )
-                .attr('y', -height + margin.top)
-                .attr('width', barWidth)
-                .attr('height', (value) => calScale(value.calories))
-                .attr('fill', '#E60000')
-                .attr('rx', 5)
+                .join('circle')
+                .attr('cx', x)
+                .attr('cy', y)
+                .attr('r', (barWidth -1)/2)
+                .attr('fill', color)
+
+            }
+
+            createDataBars('weight-bar', (data, index) => xScale(index) + weigthBarOffset, (data) => weightScale(data.kilogram) - 10, colors.black)
+            createDataBars('calories-bar', (data, index) => xScale(index) + weigthBarOffset + 20, (data) => calScale(data.calories), colors.red)
 
             const tooltip = svg
                 .selectAll('.tooltip')
@@ -172,9 +158,9 @@ function BarChart({ activity }) {
                 .attr('class', 'tooltip')
                 .attr('transform', 'scale(1, -1)')
                 .attr('x', (value, index) => xScale(index) + 42)
-                .attr('y', -height + margin.top)
+                .attr('y', -height + margin.bottom)
                 .attr('width', 60)
-                .attr('height', height - margin.top)
+                .attr('height', height - margin.top - margin.bottom)
                 .attr('fill', '#c4c4c4')
                 .style('opacity', 0.2)
 

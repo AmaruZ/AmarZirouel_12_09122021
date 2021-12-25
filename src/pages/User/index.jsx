@@ -11,10 +11,10 @@ import {
     fetchSessions,
 } from '../../services'
 import Card from '../../components/Card'
-import Graph from '../../components/Graph'
 import BarChart from '../../components/BarChart'
 import LineChart from '../../components/LineChart'
-import SpiderChart from '../../components/SpiderChart'
+import RadarChart from '../../components/RadarChart'
+import RadialBarChart from '../../components/RadialBarChart'
 
 const UserContainer = styled.div`
     margin-left: 117px;
@@ -24,8 +24,8 @@ const UserContainer = styled.div`
 
 const DatasContainer = styled.div`
     display: flex;
-    width: 85vw;
-    height: 65vh;
+    width: 80vw;
+    height: 70vh;
     margin-top: 3%;
     justify-content: space-between;
 `
@@ -34,14 +34,12 @@ const GraphsContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 76%;
+    width: 75%;
 `
 
 const MediumGraphsContainer = styled.div`
     display: flex;
-    height: 49%;
     justify-content: space-between;
-    margin-top: 20px;
 `
 
 function UserProfile() {
@@ -88,7 +86,7 @@ function UserProfile() {
 
                     <MediumGraphsContainer>
                         <LineChart session={session} />
-                        <SpiderChart
+                        <RadarChart
                             cardio={performance.data[0].value}
                             energy={performance.data[1].value}
                             endurance={performance.data[2].value}
@@ -96,7 +94,7 @@ function UserProfile() {
                             speed={performance.data[4].value}
                             intensity={performance.data[5].value}
                         />
-                        <Graph type="medium" />
+                        <RadialBarChart score={data.todayScore? data.todayScore : data.score}/>
                     </MediumGraphsContainer>
                 </GraphsContainer>
                 {<Card keyData={data.keyData} />}

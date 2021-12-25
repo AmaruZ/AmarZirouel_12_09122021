@@ -2,12 +2,14 @@ import { useEffect } from 'react/cjs/react.development'
 import * as d3 from 'd3'
 import { useRef } from 'react'
 import styled from 'styled-components'
+import { colors } from '../../utils/styles/colors'
 
-const SpiderChartContainer = styled.div`
-    background: #282d30;
+const RadarChartContainer = styled.div`
+    background: ${colors.black};
+    border-radius: 5px;
 `
 
-function SpiderChart({
+function RadarChart({
     cardio,
     energy,
     endurance,
@@ -135,10 +137,10 @@ function SpiderChart({
         )
     })
     return (
-        <SpiderChartContainer>
+        <RadarChartContainer>
             <svg ref={chartRef}></svg>
-        </SpiderChartContainer>
+        </RadarChartContainer>
     )
 }
 
-export default SpiderChart
+export default RadarChart
