@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { axisBottom, axisRight } from 'd3'
+import propTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { colors } from '../../utils/styles/colors'
@@ -38,6 +39,7 @@ function BarChart({ activity }) {
             const barWidth = 7
             const weigthBarOffset = 60
 
+            //Create the legends of our chart
             const legends = d3
                 .select(titleRef.current)
                 .attr('width', width)
@@ -66,8 +68,9 @@ function BarChart({ activity }) {
                     .attr('r', 8)
                     .style('fill', color)
             }
-            addLegendCircle({x: width - 245, y: 19}, colors.black)
-            addLegendCircle({x: width - 135, y: 19}, colors.red)
+
+            addLegendCircle({ x: width - 245, y: 19 }, colors.black)
+            addLegendCircle({ x: width - 135, y: 19 }, colors.red)
 
             const svg = d3
                 .select(chartRef.current)
@@ -96,7 +99,9 @@ function BarChart({ activity }) {
                     d3.max(activity, (d) => d.calories + 100),
                 ])
 
-            const xAxis = axisBottom(xScale).tickSize(0)
+            const xAxis = axisBottom(xScale)
+                .tickSize(0)
+                .tickFormat((d, i) => i + 1)
 
             svg.select('.x-axis')
                 .attr(
@@ -123,36 +128,75 @@ function BarChart({ activity }) {
                 .attr('stroke-width', 0)
                 .call(yAxis)
 
-            const createDataBars = (className, x, y, color) =>{
-                svg.append('g').selectAll(className)
-                .data(activity)
-                .join('line')
-                .attr('class', className)
-                .attr('x1', x)
-                .attr('x2', x)
-                .attr('y1', height - margin.bottom)
-                .attr('y2', y)
-                .attr('stroke-width', barWidth)
-                .attr('stroke', color)
-
-                svg.append('g').selectAll(`.${className}-circle`)
-                .data(activity)
-                .join('circle')
-                .attr('cx', x)
-                .attr('cy', y)
-                .attr('r', (barWidth -1)/2)
-                .attr('fill', color)
-
+            const addDottedLine = (parent, x1, x2, y) => {
+                parent
+                    .append('line')
+                    .attr('x1', x1)
+                    .attr('x2', x2)
+                    .attr('y1', y)
+                    .attr('y2', y)
+                    .attr('stroke-width', 1)
+                    .attr('stroke', '#DEDEDE')
+                    .attr('stroke-dasharray', '5,5')
+                    .attr('transform', `translate(0, ${-margin.top})`)
             }
 
-            createDataBars('weight-bar', (data, index) => xScale(index) + weigthBarOffset, (data) => weightScale(data.kilogram) - 10, colors.black)
-            createDataBars('calories-bar', (data, index) => xScale(index) + weigthBarOffset + 20, (data) => calScale(data.calories), colors.red)
+            addDottedLine(
+                svg,
+                margin.left,
+                width - margin.right,
+                weightScale(d3.max(activity, (d) => d.kilogram))
+            )
+            addDottedLine(
+                svg,
+                margin.left,
+                width - margin.right,
+                weightScale(d3.min(activity, (d) => d.kilogram))
+            )
 
+            const createDataBars = (className, x, y, color) => {
+                svg.append('g')
+                    .selectAll(className)
+                    .data(activity)
+                    .join('line')
+                    .attr('class', className)
+                    .attr('x1', x)
+                    .attr('x2', x)
+                    .attr('y1', height - margin.bottom)
+                    .attr('y2', y)
+                    .attr('stroke-width', barWidth)
+                    .attr('stroke', color)
+
+                svg.append('g')
+                    .selectAll(`.${className}-circle`)
+                    .data(activity)
+                    .join('circle')
+                    .attr('cx', x)
+                    .attr('cy', y)
+                    .attr('r', (barWidth - 1) / 2)
+                    .attr('fill', color)
+            }
+
+            createDataBars(
+                'weight-bar',
+                (data, index) => xScale(index) + weigthBarOffset,
+                (data) => weightScale(data.kilogram) - 10,
+                colors.black
+            )
+            createDataBars(
+                'calories-bar',
+                (data, index) => xScale(index) + weigthBarOffset + 20,
+                (data) => calScale(data.calories),
+                colors.red
+            )
+
+            //Create invisible rect which will be our tooltips on mouseover
             const tooltip = svg
                 .selectAll('.tooltip')
                 .data(activity)
                 .join('g')
                 .style('opacity', 0)
+
             tooltip
                 .append('rect')
                 .attr('class', 'tooltip')
@@ -174,24 +218,28 @@ function BarChart({ activity }) {
                 .append('rect')
                 .attr('x', (value, index) => xScale(index) + 102)
                 .attr('y', 0)
-                .attr('width', 39)
+                .attr('width', 50)
                 .attr('height', 63)
-                .attr('fill', '#E60000')
+                .attr('fill', colors.red)
 
-            tooltip
-                .append('text')
-                .attr('x', (value, index) => xScale(index) + 105)
-                .attr('y', 25)
-                .text((d) => d.kilogram)
-                .attr('fill', 'white')
-                .style('font-size', '10px')
-            tooltip
-                .append('text')
-                .attr('x', (value, index) => xScale(index) + 105)
-                .attr('y', 40)
-                .text((d) => d.calories)
-                .attr('fill', 'white')
-                .style('font-size', '10px')
+            const addTooltipText = (parent, text, x, y, unit) => {
+                const xtspan = x + 15
+                parent
+                    .append('text')
+                    .attr('x', x)
+                    .attr('y', y)
+                    .text(text)
+                    .attr('fill', 'white')
+                    .style('font-size', '10px')
+                    .append('tspan')
+                    .text(` ${unit}`)
+
+            }
+
+            addTooltipText(tooltip, (d) => d.kilogram, ((value, index) => xScale(index) + 115), 25, 'kg')
+            addTooltipText(tooltip, (d) => d.calories, (value, index) => xScale(index) + 110, 40, 'kCal')
+
+
         }
     }, [activity])
 
@@ -208,3 +256,7 @@ function BarChart({ activity }) {
 }
 
 export default BarChart
+
+BarChart.propTypes = {
+    activity: propTypes.array.isRequired,
+}

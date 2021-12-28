@@ -3,22 +3,20 @@ import iconCal from '../../assets/icon-calories.svg'
 import iconProt from '../../assets/icon-protein.svg'
 import iconCarb from '../../assets/icon-carbo.svg'
 import iconFat from '../../assets/icon-fat.svg'
-
-const CardsContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-`
+import propTypes from 'prop-types'
 
 const CardWrapper = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 17vw;
-    height: 13vh;
+    width: 260px;
+    height: 110px;
     background: #fbfbfb;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249);
     border-radius: 5px;
     align-items: center;
+    @media screen and (max-width: 1310px) {
+        margin-bottom: 20px;
+    }
 `
 
 const Icon = styled.img`
@@ -35,7 +33,7 @@ const SubText = styled.p`
     font-size: 14px;
 `
 
-function Card({ keyData }) {
+function Card({ type, value }) {
     const setIcon = {
         calorieCount: iconCal,
         proteinCount: iconProt,
@@ -50,23 +48,22 @@ function Card({ keyData }) {
     }
 
     return (
-        <CardsContainer>
-            {Object.entries(keyData).map(([key, value]) => {
-                return (
-                    <CardWrapper key={key}>
-                        <Icon src={setIcon[key]} alt="" />
-                        <div>
-                            <ValueText>
-                                {value}
-                                {key === 'calorieCount' ? 'kCal' : 'g'}
-                            </ValueText>
-                            <SubText>{setName[key]}</SubText>
-                        </div>
-                    </CardWrapper>
-                )
-            })}
-        </CardsContainer>
+        <CardWrapper>
+            <Icon src={setIcon[type]} alt="" />
+            <div>
+                <ValueText>
+                    {value}
+                    {type === 'calorieCount' ? 'kCal' : 'g'}
+                </ValueText>
+                <SubText>{setName[type]}</SubText>
+            </div>
+        </CardWrapper>
     )
 }
 
 export default Card
+
+Card.propTypes = {
+    type: propTypes.string.isRequired,
+    value: propTypes.number.isRequired,
+}

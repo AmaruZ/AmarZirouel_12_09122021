@@ -1,28 +1,16 @@
 import { useEffect } from 'react/cjs/react.development'
 import * as d3 from 'd3'
 import { useRef } from 'react'
-import styled from 'styled-components'
 import { colors } from '../../utils/styles/colors'
+import propTypes from 'prop-types'
 
-const RadarChartContainer = styled.div`
-    background: ${colors.black};
-    border-radius: 5px;
-`
-
-function RadarChart({
-    cardio,
-    energy,
-    endurance,
-    strength,
-    speed,
-    intensity,
-}) {
+function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
     const chartRef = useRef()
 
     useEffect(() => {
         const sides = 6,
             level = 5,
-            size = Math.min(window.innerWidth, window.innerHeight, 258),
+            size = Math.min(window.innerWidth, window.innerHeight, 260),
             offset = Math.PI,
             polyangle = (Math.PI * 2) / sides,
             r = 0.75 * size,
@@ -36,6 +24,9 @@ function RadarChart({
             .select(chartRef.current)
             .attr('width', size)
             .attr('height', size)
+            .style('background', colors.black)
+            .style('border-radius', '5px')
+            
         const g = svg.append('g')
 
         const generatePoint = ({ length, angle }) => {
@@ -95,27 +86,15 @@ function RadarChart({
 
             drawPath([...points, points[0]], group)
         }
-        const drawText = (text, point, isAxis, group) => {
-            if (isAxis) {
-                const xSpacing = text.toString().includes('.') ? 30 : 22
-                group
-                    .append('text')
-                    .attr('x', point.x - xSpacing)
-                    .attr('y', point.y + 5)
-                    .html(text)
-                    .style('text-anchor', 'middle')
-                    .attr('fill', 'white')
-                    .style('font-size', '12px')
-            } else {
-                group
-                    .append('text')
-                    .attr('x', point.x)
-                    .attr('y', point.y)
-                    .html(text)
-                    .style('text-anchor', 'middle')
-                    .attr('fill', 'white')
-                    .style('font-size', '12px')
-            }
+        const drawText = (text, point, group) => {
+            group
+                .append('text')
+                .attr('x', point.x)
+                .attr('y', point.y + 5)
+                .html(text)
+                .style('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .style('font-size', '12px')
         }
 
         const drawLabels = (dataset, sideCount) => {
@@ -124,7 +103,7 @@ function RadarChart({
                 const angle = vertex * polyangle
                 const label = dataset[vertex]
                 const point = generatePoint({ length: 0.9 * (size / 2), angle })
-                drawText(label, point, false, groupL)
+                drawText(label, point, groupL)
             }
         }
 
@@ -136,11 +115,16 @@ function RadarChart({
             sides
         )
     })
-    return (
-        <RadarChartContainer>
-            <svg ref={chartRef}></svg>
-        </RadarChartContainer>
-    )
+    return <svg ref={chartRef}></svg>
 }
 
 export default RadarChart
+
+RadarChart.propTypes = {
+    cardio: propTypes.number.isRequired,
+    energy: propTypes.number.isRequired,
+    endurance: propTypes.number.isRequired,
+    strength: propTypes.number.isRequired,
+    speed: propTypes.number.isRequired,
+    intensity: propTypes.number.isRequired,
+}

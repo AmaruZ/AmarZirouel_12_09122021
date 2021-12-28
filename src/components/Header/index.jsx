@@ -3,11 +3,15 @@ import styled from 'styled-components'
 import logo from '../../assets/logo.svg'
 
 const StyledHeader = styled.header`
+    position: fixed;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #000;
     padding: 0.6% 30px;
+    top: 0;
+    z-index: 5;
+    height: 80px;
 `
 
 const Navigation = styled.nav`

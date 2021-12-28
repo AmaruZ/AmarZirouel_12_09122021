@@ -1,19 +1,16 @@
 import { useEffect } from 'react/cjs/react.development'
 import * as d3 from 'd3'
 import { useRef } from 'react'
-import styled from 'styled-components'
-
-const RadialBarContainer = styled.div`
-    background: #fbfbfb;
-    border-radius: 5px;
-`
+import { colors } from '../../utils/styles/colors'
+import propTypes from 'prop-types'
 
 function RadialBarChart({ score }) {
     const chartRef = useRef()
 
     useEffect(() => {
-        const width = 258
-        const height = 258
+
+        const width = 260
+        const height = 260
         const outerRadius = width * 0.35
         const thickness = 10
 
@@ -21,6 +18,8 @@ function RadialBarChart({ score }) {
             .select(chartRef.current)
             .attr('width', width)
             .attr('height', height)
+            .style('background', colors.lightgrey)
+            .style('border-radius', '5px')
 
         svg.append('circle')
             .attr('cx', width / 2)
@@ -28,15 +27,32 @@ function RadialBarChart({ score }) {
             .attr('r', width * 0.35 - thickness)
             .attr('fill', 'white')
 
-        svg.append('text')
-            .attr('x', 35)
-            .attr('y', 35)
-            .text(`Score`)
-            .style('font-weight', '500')
-            .style('font-size', 15)
-            .style('color', '#20253A')
+        const addText = (
+            parent,
+            type,
+            text,
+            x,
+            y,
+            fontWeight,
+            fontSize,
+            color = 'black'
+        ) => {
+            return parent
+                .append(type)
+                .text(text)
+                .attr('x', x)
+                .attr('y', y)
+                .style('font-weight', fontWeight)
+                .style('font-size', fontSize)
+                .style('color', color)
+        }
 
-        // Draw our arc
+        addText(svg, 'text', 'Score', 35, 35, 500, 15, '#20253A')
+
+        const text = addText(svg, 'text', `${score * 100}%`, width / 2 - 20, height / 2 - 10, 700, "26px")
+        addText(text, 'tspan', 'de votre', width / 2 - 25, height / 2 + 12, 500, "16px")
+        addText(text, 'tspan', 'objectif', width / 2 - 22, height / 2 + 32, 500, "16px")
+
         svg.append('path')
             .attr('transform', `translate(${width / 2}, ${height / 2})`)
             .attr(
@@ -50,35 +66,13 @@ function RadialBarChart({ score }) {
                     .cornerRadius(10)
             )
             .attr('fill', 'red')
-
-        //Create the text in center of our chart
-        const text = svg
-            .append('text')
-            .attr('x', width / 2 - 20)
-            .attr('y', height / 2 - 10)
-            .text(`${score * 100}%`)
-            .style('font-weight', '700')
-            .style('font-size', '26px')
-
-        text.append('tspan')
-            .text('de votre')
-            .attr('x', width / 2 - 25)
-            .attr('y', height / 2 + 12)
-            .style('font-weight', '500')
-            .style('font-size', '16px')
-        text.append('tspan')
-            .text('objectif')
-            .attr('x', width / 2 - 20)
-            .attr('y', height / 2 + 32)
-            .style('font-weight', '500')
-            .style('font-size', '16px')
     })
 
-    return (
-        <RadialBarContainer>
-            <svg ref={chartRef}></svg>
-        </RadialBarContainer>
-    )
+    return <svg ref={chartRef}></svg>
 }
 
 export default RadialBarChart
+
+RadialBarChart.propTypes = {
+    score: propTypes.number.isRequired,
+}

@@ -17,6 +17,7 @@ import RadarChart from '../../components/RadarChart'
 import RadialBarChart from '../../components/RadialBarChart'
 
 const UserContainer = styled.div`
+    margin-top: 75px;
     margin-left: 117px;
     padding-left: 5%;
     padding-top: 3%;
@@ -25,9 +26,12 @@ const UserContainer = styled.div`
 const DatasContainer = styled.div`
     display: flex;
     width: 80vw;
-    height: 70vh;
+    height: 68vh;
     margin-top: 3%;
     justify-content: space-between;
+    @media screen and (max-width: 1310px) {
+        flex-direction: column;
+    }
 `
 
 const GraphsContainer = styled.div`
@@ -35,13 +39,27 @@ const GraphsContainer = styled.div`
     flex-direction: column;
     justify-content: space-between;
     width: 75%;
+    @media screen and (max-width: 1310px) {
+        width: 100%;
+    }
 `
 
 const MediumGraphsContainer = styled.div`
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 `
 
+const CardsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    @media screen and (max-width: 1310px) {
+        margin-top: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+`
 function UserProfile() {
     const { id } = useParams()
     const [data, setData] = useState([])
@@ -68,12 +86,11 @@ function UserProfile() {
         getData()
     }, [id])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (performance) setLoading(false)
     }, [performance])
 
     if (data.length === 0) return <Error />
-
 
     return isLoading ? (
         'chargement'
@@ -83,7 +100,6 @@ function UserProfile() {
             <DatasContainer>
                 <GraphsContainer>
                     <BarChart activity={activity} />
-
                     <MediumGraphsContainer>
                         <LineChart session={session} />
                         <RadarChart
@@ -94,10 +110,18 @@ function UserProfile() {
                             speed={performance.data[4].value}
                             intensity={performance.data[5].value}
                         />
-                        <RadialBarChart score={data.todayScore? data.todayScore : data.score}/>
+                        <RadialBarChart
+                            score={
+                                data.todayScore ? data.todayScore : data.score
+                            }
+                        />
                     </MediumGraphsContainer>
                 </GraphsContainer>
-                {<Card keyData={data.keyData} />}
+                <CardsContainer>
+                    {Object.entries(data.keyData).map(([key, value]) => {
+                        return <Card type={key} value={value} key={key} />
+                    })}
+                </CardsContainer>
             </DatasContainer>
         </UserContainer>
     )
