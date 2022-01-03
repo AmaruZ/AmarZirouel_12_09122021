@@ -33,6 +33,14 @@ const SubText = styled.p`
     font-size: 14px;
 `
 
+/**
+ * Create a card with key informations
+ * @param {Object} param0
+ * @param {String} param0.type
+ * @param {Number} param0.value
+ * @returns {JSX.Element}
+ */
+
 function Card({ type, value }) {
     const setIcon = {
         calorieCount: iconCal,

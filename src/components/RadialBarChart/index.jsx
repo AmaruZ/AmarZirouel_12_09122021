@@ -4,11 +4,17 @@ import { useRef } from 'react'
 import { colors } from '../../utils/styles/colors'
 import propTypes from 'prop-types'
 
+/**
+ * Radar chart component
+ * @param {Object} param0
+ * @param {Number} param0.score 
+ * @returns {JSX.Element}
+ */
+
 function RadialBarChart({ score }) {
     const chartRef = useRef()
 
     useEffect(() => {
-
         const width = 260
         const height = 260
         const outerRadius = width * 0.35
@@ -26,6 +32,19 @@ function RadialBarChart({ score }) {
             .attr('cy', height / 2)
             .attr('r', width * 0.35 - thickness)
             .attr('fill', 'white')
+
+        /**
+         * Add a text in our chart
+         * @param {SVGElement} parent
+         * @param {String} type - text or tspan
+         * @param {String} text
+         * @param {Number} x
+         * @param {Number} y
+         * @param {String} fontWeight
+         * @param {String} fontSize
+         * @param {String} color
+         * @returns {SVGElement}
+         */
 
         const addText = (
             parent,
@@ -49,9 +68,33 @@ function RadialBarChart({ score }) {
 
         addText(svg, 'text', 'Score', 35, 35, 500, 15, '#20253A')
 
-        const text = addText(svg, 'text', `${score * 100}%`, width / 2 - 20, height / 2 - 10, 700, "26px")
-        addText(text, 'tspan', 'de votre', width / 2 - 25, height / 2 + 12, 500, "16px")
-        addText(text, 'tspan', 'objectif', width / 2 - 22, height / 2 + 32, 500, "16px")
+        const text = addText(
+            svg,
+            'text',
+            `${score * 100}%`,
+            width / 2 - 20,
+            height / 2 - 10,
+            700,
+            '26px'
+        )
+        addText(
+            text,
+            'tspan',
+            'de votre',
+            width / 2 - 25,
+            height / 2 + 12,
+            500,
+            '16px'
+        )
+        addText(
+            text,
+            'tspan',
+            'objectif',
+            width / 2 - 22,
+            height / 2 + 32,
+            500,
+            '16px'
+        )
 
         svg.append('path')
             .attr('transform', `translate(${width / 2}, ${height / 2})`)

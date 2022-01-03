@@ -1,3 +1,4 @@
+import propTypes from 'prop-types'
 import styled from 'styled-components'
 
 const ErrorContainer = styled.main`
@@ -10,8 +11,16 @@ const ErrorContainer = styled.main`
     font-size: 100px;
 `
 
-function Error() {
-    return <ErrorContainer>404</ErrorContainer>
+function Error({ errorMsg }) {
+    return <ErrorContainer>{errorMsg}</ErrorContainer>
 }
 
 export default Error
+
+Error.propTypes = {
+    errorMsg: propTypes.string,
+}
+
+Error.defaultProps = {
+    errorMsg: '404',
+}

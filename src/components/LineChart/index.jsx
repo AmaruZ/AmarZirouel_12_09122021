@@ -4,6 +4,13 @@ import { axisBottom } from 'd3'
 import { colors } from '../../utils/styles/colors'
 import propTypes from 'prop-types'
 
+/**
+ * Line chart component
+ * @param {Object} param0 
+ * @param {Array} session
+ * @returns {JSX.Element}
+ */
+
 function LineChart({ session }) {
     const chartRef = useRef()
     useEffect(() => {
@@ -93,8 +100,6 @@ function LineChart({ session }) {
             .append('rect')
             .attr('height', height)
 
-
-
             const focusPoint = focus
                 .append('g')
                 .append('circle')
@@ -117,9 +122,6 @@ function LineChart({ session }) {
                 .attr('alignment-baseline', 'middle')
                 .style('font-size', "12px")
 
-
-
-            // Create a rect on top of the svg area: this rectangle recovers mouse position
             svg.append('rect')
                 .attr('fill', 'none')
                 .style('pointer-events', 'all')

@@ -13,6 +13,7 @@ const BarChartContainer = styled.div`
     background: ${colors.lightgrey};
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249);
     border-radius: 5px;
+    padding-top: 5px;
 `
 
 const XAxis = styled.g`
@@ -27,6 +28,12 @@ const YAxis = styled.g`
     font-size: 14px;
 `
 
+/**
+ * Bar chart component
+ * @param {Object} activity
+ * @returns {JSX.Element}
+ */
+
 function BarChart({ activity }) {
     const titleRef = useRef()
     const chartRef = useRef()
@@ -39,11 +46,19 @@ function BarChart({ activity }) {
             const barWidth = 7
             const weigthBarOffset = 60
 
-            //Create the legends of our chart
             const legends = d3
                 .select(titleRef.current)
                 .attr('width', width)
                 .attr('height', 40)
+
+            /**
+             * Add a text in a svg element
+             * @param {String} text
+             * @param {Object} position
+             * @param {Number} position.x
+             * @param {Number} position.y
+             * @param {SVGElement} parent
+             */
 
             const addText = (text, position, parent) => {
                 parent
@@ -55,13 +70,22 @@ function BarChart({ activity }) {
                     .style('font-weight', 500)
                     .style('alignment-baseline', 'middle')
             }
-
+            
             addText('Activité quotidienne', { x: 0, y: 20 }, legends)
             addText('Poids (kg)', { x: width - 230, y: 20 }, legends)
             addText('Calories (kCal)', { x: width - 120, y: 20 }, legends)
 
-            const addLegendCircle = (position, color) => {
-                legends
+            /**
+             * Add a circle in a svg element
+             * @param {SVGElement} parent
+             * @param {Object} position
+             * @param {Number} position.x
+             * @param {Number} position.y
+             * @param {String} color
+             */
+
+            const addLegendCircle = (parent, position, color) => {
+                parent
                     .append('circle')
                     .attr('cx', position.x)
                     .attr('cy', position.y)
@@ -69,8 +93,8 @@ function BarChart({ activity }) {
                     .style('fill', color)
             }
 
-            addLegendCircle({ x: width - 245, y: 19 }, colors.black)
-            addLegendCircle({ x: width - 135, y: 19 }, colors.red)
+            addLegendCircle(legends, { x: width - 245, y: 19 }, colors.black)
+            addLegendCircle(legends, { x: width - 135, y: 19 }, colors.red)
 
             const svg = d3
                 .select(chartRef.current)
@@ -128,6 +152,14 @@ function BarChart({ activity }) {
                 .attr('stroke-width', 0)
                 .call(yAxis)
 
+            /**
+             * Create a horizontal dotted line
+             * @param {SVGElement} parent 
+             * @param {Number} x1 
+             * @param {Number} x2 
+             * @param {Number} y 
+             */
+
             const addDottedLine = (parent, x1, x2, y) => {
                 parent
                     .append('line')
@@ -153,6 +185,14 @@ function BarChart({ activity }) {
                 width - margin.right,
                 weightScale(d3.min(activity, (d) => d.kilogram))
             )
+
+            /**
+             * Create our data bars
+             * @param {String} className
+             * @param {Function|Number} x
+             * @param {Function|Number} y
+             * @param {String} color
+             */
 
             const createDataBars = (className, x, y, color) => {
                 svg.append('g')
@@ -190,7 +230,7 @@ function BarChart({ activity }) {
                 colors.red
             )
 
-            //Create invisible rect which will be our tooltips on mouseover
+
             const tooltip = svg
                 .selectAll('.tooltip')
                 .data(activity)
@@ -207,23 +247,30 @@ function BarChart({ activity }) {
                 .attr('height', height - margin.top - margin.bottom)
                 .attr('fill', '#c4c4c4')
                 .style('opacity', 0.2)
-
                 .on('mouseover', (d) =>
                     d3.select(d.target.parentNode).style('opacity', 1)
                 )
                 .on('mouseleave', (d) =>
                     d3.select(d.target.parentNode).style('opacity', 0)
                 )
+
             tooltip
                 .append('rect')
                 .attr('x', (value, index) => xScale(index) + 102)
                 .attr('y', 0)
-                .attr('width', 50)
+                .attr('width', 55)
                 .attr('height', 63)
                 .attr('fill', colors.red)
 
+                /**
+                 * Add a text inside our tooltips
+                 * @param {SVGElement} parent 
+                 * @param {String} text 
+                 * @param {Function|Number} x 
+                 * @param {Function|Number} y 
+                 * @param {String} unit 
+                 */
             const addTooltipText = (parent, text, x, y, unit) => {
-                const xtspan = x + 15
                 parent
                     .append('text')
                     .attr('x', x)
@@ -233,13 +280,22 @@ function BarChart({ activity }) {
                     .style('font-size', '10px')
                     .append('tspan')
                     .text(` ${unit}`)
-
             }
 
-            addTooltipText(tooltip, (d) => d.kilogram, ((value, index) => xScale(index) + 115), 25, 'kg')
-            addTooltipText(tooltip, (d) => d.calories, (value, index) => xScale(index) + 110, 40, 'kCal')
-
-
+            addTooltipText(
+                tooltip,
+                (d) => d.kilogram,
+                (value, index) => xScale(index) + 115,
+                25,
+                'kg'
+            )
+            addTooltipText(
+                tooltip,
+                (d) => d.calories,
+                (value, index) => xScale(index) + 110,
+                40,
+                'kCal'
+            )
         }
     }, [activity])
 

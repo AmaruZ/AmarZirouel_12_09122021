@@ -4,6 +4,12 @@ import { useRef } from 'react'
 import { colors } from '../../utils/styles/colors'
 import propTypes from 'prop-types'
 
+/**
+ * Radar chart component
+ * @param {Object} param0 
+ * @returns {JSX.Element}
+ */
+
 function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
     const chartRef = useRef()
 
@@ -26,8 +32,16 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
             .attr('height', size)
             .style('background', colors.black)
             .style('border-radius', '5px')
-            
+
         const g = svg.append('g')
+
+        /**
+         * Help us to generate a point in our radar
+         * @param {Object} param0
+         * @param {Number} param0.length
+         * @param {Number} param0.angle
+         * @returns
+         */
 
         const generatePoint = ({ length, angle }) => {
             const point = {
@@ -36,6 +50,12 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
             }
             return point
         }
+
+        /**
+         * Draw a path
+         * @param {Array} points
+         * @param {SVGElement} parent
+         */
 
         const drawPath = (points, parent) => {
             const lineGenerator = d3
@@ -47,6 +67,12 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
         }
 
         const scale = d3.scaleLinear().domain([0, 255]).range([0, r_0])
+
+        /**
+         * Draw the level lines
+         * @param {Number} levelsCount
+         * @param {Number} sideCount
+         */
 
         const generateAndDrawLevels = (levelsCount, sideCount) => {
             for (let level = 1; level <= levelsCount; level++) {
@@ -67,6 +93,13 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
                 drawPath([...points, points[0]], group)
             }
         }
+
+        /**
+         * Draw the data's area
+         * @param {Array} dataset
+         * @param {Number} n
+         */
+
         const drawData = (dataset, n) => {
             const points = []
             dataset.forEach((d, i) => {
@@ -86,8 +119,18 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
 
             drawPath([...points, points[0]], group)
         }
-        const drawText = (text, point, group) => {
-            group
+
+        /**
+         * Add a text
+         * @param {String} text
+         * @param {Object} point
+         * @param {Number} point.x
+         * @param {Number} point.y
+         * @param {SVGElement} parent
+         */
+
+        const drawText = (text, point, parent) => {
+            parent
                 .append('text')
                 .attr('x', point.x)
                 .attr('y', point.y + 5)
@@ -96,6 +139,12 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
                 .attr('fill', 'white')
                 .style('font-size', '12px')
         }
+
+        /**
+         * Add the labels in our chart
+         * @param {Array} dataset
+         * @param {Number} sideCount
+         */
 
         const drawLabels = (dataset, sideCount) => {
             const groupL = g.append('g').attr('class', 'labels')
