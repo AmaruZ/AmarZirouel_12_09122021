@@ -12,9 +12,9 @@ import {
 } from '../../services'
 import Card from '../../components/Card'
 import BarChart from '../../components/BarChart'
-import LineChart from '../../components/LineChart'
-import RadarChart from '../../components/RadarChart'
-import RadialBarChart from '../../components/RadialBarChart'
+import AverageTimeChart from '../../components/AverageTimeChart'
+import PerformanceChart from '../../components/PerformanceChart'
+import ScoreChart from '../../components/ScoreChart'
 
 const UserContainer = styled.div`
     margin-top: 75px;
@@ -101,8 +101,8 @@ function UserProfile() {
                 <GraphsContainer>
                     <BarChart activity={activity} />
                     <MediumGraphsContainer>
-                        <LineChart session={session} />
-                        <RadarChart
+                        <AverageTimeChart session={session} />
+                        <PerformanceChart
                             cardio={performance.data[0].value}
                             energy={performance.data[1].value}
                             endurance={performance.data[2].value}
@@ -110,7 +110,7 @@ function UserProfile() {
                             speed={performance.data[4].value}
                             intensity={performance.data[5].value}
                         />
-                        <RadialBarChart
+                        <ScoreChart
                             score={
                                 data.todayScore ? data.todayScore : data.score
                             }
