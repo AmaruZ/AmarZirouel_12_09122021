@@ -53,7 +53,9 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
 
         /**
          * Draw a path
-         * @param {Array} points
+         * @param {Array.<Object>} points
+         * @param {Number} points[].x
+         * @param {Number} points[].y
          * @param {SVGElement} parent
          */
 
@@ -96,7 +98,7 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
 
         /**
          * Draw the data's area
-         * @param {Array} dataset
+         * @param {Array.<Number>} dataset
          * @param {Number} n
          */
 
@@ -142,7 +144,7 @@ function RadarChart({ cardio, energy, endurance, strength, speed, intensity }) {
 
         /**
          * Add the labels in our chart
-         * @param {Array} dataset
+         * @param {Array.<Number>} dataset
          * @param {Number} sideCount
          */
 

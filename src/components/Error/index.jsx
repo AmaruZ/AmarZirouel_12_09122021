@@ -11,6 +11,13 @@ const ErrorContainer = styled.main`
     font-size: 100px;
 `
 
+/**
+ * Error component returning by default 404
+ * @param {Object} props 
+ * @param {String} props.errorMsg
+ * @returns {JSX.Element}
+ */
+
 function Error({ errorMsg }) {
     return <ErrorContainer>{errorMsg}</ErrorContainer>
 }

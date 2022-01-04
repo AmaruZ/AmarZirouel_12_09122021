@@ -30,7 +30,10 @@ const YAxis = styled.g`
 
 /**
  * Bar chart component
- * @param {Object} activity
+ * @param {Object} props
+ * @param {Object} props.activity
+ * @param {Array.<Number>} props.activity.kilogram
+ * @param {Array.<Number>} props.activity.calories
  * @returns {JSX.Element}
  */
 
@@ -70,7 +73,7 @@ function BarChart({ activity }) {
                     .style('font-weight', 500)
                     .style('alignment-baseline', 'middle')
             }
-            
+
             addText('Activité quotidienne', { x: 0, y: 20 }, legends)
             addText('Poids (kg)', { x: width - 230, y: 20 }, legends)
             addText('Calories (kCal)', { x: width - 120, y: 20 }, legends)
@@ -154,10 +157,10 @@ function BarChart({ activity }) {
 
             /**
              * Create a horizontal dotted line
-             * @param {SVGElement} parent 
-             * @param {Number} x1 
-             * @param {Number} x2 
-             * @param {Number} y 
+             * @param {SVGElement} parent
+             * @param {Number} x1
+             * @param {Number} x2
+             * @param {Number} y
              */
 
             const addDottedLine = (parent, x1, x2, y) => {
@@ -230,7 +233,6 @@ function BarChart({ activity }) {
                 colors.red
             )
 
-
             const tooltip = svg
                 .selectAll('.tooltip')
                 .data(activity)
@@ -262,14 +264,15 @@ function BarChart({ activity }) {
                 .attr('height', 63)
                 .attr('fill', colors.red)
 
-                /**
-                 * Add a text inside our tooltips
-                 * @param {SVGElement} parent 
-                 * @param {String} text 
-                 * @param {Function|Number} x 
-                 * @param {Function|Number} y 
-                 * @param {String} unit 
-                 */
+            /**
+             * Add a text inside our tooltips
+             * @param {SVGElement} parent
+             * @param {String} text
+             * @param {Function|Number} x
+             * @param {Function|Number} y
+             * @param {String} unit
+             */
+
             const addTooltipText = (parent, text, x, y, unit) => {
                 parent
                     .append('text')

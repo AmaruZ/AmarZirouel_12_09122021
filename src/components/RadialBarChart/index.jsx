@@ -40,8 +40,8 @@ function RadialBarChart({ score }) {
          * @param {String} text
          * @param {Number} x
          * @param {Number} y
-         * @param {String} fontWeight
-         * @param {String} fontSize
+         * @param {Number} fontWeight
+         * @param {Number} fontSize
          * @param {String} color
          * @returns {SVGElement}
          */

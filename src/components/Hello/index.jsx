@@ -1,3 +1,4 @@
+import propTypes from 'prop-types'
 import styled from 'styled-components'
 
 const HelloContainer = styled.div`
@@ -15,6 +16,13 @@ const NameSpan = styled.span`
     color: red;
 `
 
+/**
+ * Hello component
+ * @param {Object} props
+ * @param {String} props.name
+ * @returns {JSX.Element}
+ */
+
 function Hello({ name }) {
     return (
         <HelloContainer>
@@ -27,3 +35,7 @@ function Hello({ name }) {
 }
 
 export default Hello
+
+Hello.propTypes = {
+    name: propTypes.string,
+}

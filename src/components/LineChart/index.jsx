@@ -6,8 +6,8 @@ import propTypes from 'prop-types'
 
 /**
  * Line chart component
- * @param {Object} param0 
- * @param {Array} session
+ * @param {Object} props 
+ * @param {Array.<Number>} props.session
  * @returns {JSX.Element}
  */
 

@@ -35,9 +35,9 @@ const SubText = styled.p`
 
 /**
  * Create a card with key informations
- * @param {Object} param0
- * @param {String} param0.type
- * @param {Number} param0.value
+ * @param {Object} props
+ * @param {String} props.type
+ * @param {Number} props.value
  * @returns {JSX.Element}
  */
 
