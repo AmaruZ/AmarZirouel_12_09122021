@@ -1,4 +1,4 @@
-# Project 12 - Analytics dasboard with React
+# Project 12 - Analytics dashboard with React
 
 This repo contains all the source code to run the sports analytics dashboard SportSee.
 
